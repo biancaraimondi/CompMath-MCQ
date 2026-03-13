@@ -1,0 +1,48 @@
+# ----------------------------------------------------
+# Task Definition
+# ----------------------------------------------------
+task: my_custom_mcq_task
+output_type: multiple_choice 
+tag: custom_mcq
+
+# ----------------------------------------------------
+# Dataset Configuration
+# ----------------------------------------------------
+validation_split: train
+test_split: train
+dataset_path: json 
+dataset_name: null
+dataset_kwargs:
+  data_files: my_eval_task/mcq_lm_eval_data.jsonl
+
+# ----------------------------------------------------
+# Prompt Templating
+# ----------------------------------------------------
+# doc_to_text: The main part of the prompt (the question and the options)
+doc_to_text: |
+  Question: {{question}}
+  
+  Please select the correct option:
+  {% for option in options %}
+  {{ option }}
+  {% endfor %}
+  
+  Answer:
+
+# doc_to_target: The correct index (0, 1, 2)
+# The harness will automatically score the log-likelihood of the option text corresponding to this index.
+doc_to_target: "{{ correct_label }}"
+
+# doc_to_choice: The list of choice strings.
+# This must match the options list in your JSONL file.
+doc_to_choice: "{{ options }}"
+
+
+# ----------------------------------------------------
+# Metrics
+# ----------------------------------------------------
+metric_list:
+  - metric: acc
+    aggregation: mean
+  - metric: acc_norm
+    aggregation: mean

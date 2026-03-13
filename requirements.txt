@@ -1,0 +1,5 @@
+pandas
+dotenv
+lm_eval
+fire
+openai
